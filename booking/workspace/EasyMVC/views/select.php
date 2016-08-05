@@ -17,8 +17,8 @@
         <div class="text-vertical-center">
             <h1>活動管理系統</h1>
             <br>
-            </a><button class="button" onclick="window.location.href='manage'" style="vertical-align:middle"><span>Manage </span></button>
-            <button class="button" onclick="window.location.href='manage'" style="vertical-align:middle"><span>Visit </span></button>
+            </a><button class="button" onclick="window.location.href='../Manage/manage'" style="vertical-align:middle"><span>Manage </span></button>
+            <button class="button" onclick="window.location.href='../Visit/visit'" style="vertical-align:middle"><span>Visit </span></button>
         </div>
     </header>
 </body>
