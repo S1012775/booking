@@ -47,19 +47,17 @@ class activity_visit extends Connect {
         //判斷剩餘名額    	
         try{
         
-        $pdo->beginTransaction();
-        $sql="SELECT * FROM `add_activity` WHERE id = :id FOR UPDATE";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $_POST['id']);
+        $this->db->beginTransaction();
+        $sql="SELECT * FROM `add_activity` WHERE id = $browseid FOR UPDATE";
+        $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        $quotapeople = $stmt->fetch();
+        $people = $stmt->fetch();
         
-        sleep(5);
-        if($quotapeople['quotapeople'] >= $_POST['partner']+1 ){
-            $sql="UPDATE `add_activity` SET `quotapeople` = quotapeople - (:partner+1) WHERE id = :id" ; 
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':id', $_POST['id']);
-            $stmt->bindParam(':buyAmount', $_POST['partner'], PDO::PARAM_INT);
+        sleep(3);
+        if($people['quotapeople'] >= ($_POST['partner']+1) ){
+            $sql="UPDATE `add_activity` SET `quotapeople` = quotapeople - (:partner+1) WHERE id = $browseid" ; 
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':partner', $_POST['partner'], PDO::PARAM_INT);
             $updateCount = $stmt->execute();
             
             if($updateCount > 0){
@@ -67,21 +65,29 @@ class activity_visit extends Connect {
             }else{
                 $msg = '報名失敗';
             }
-        }else{
+        }
+        else{
            throw new Exception("人數已滿");
         }
         
         
         
-        $pdo->commit();
+        $this->db->commit();
         
     }catch (Exception $err){
-        $pdo->rollBack();
+        $this->db->rollBack();
         $msg = $err->getMessage();
-    }    	
+    } 
+    
+    
             	
         }  
     }
+    
+    
+    
+    
+    
     //瀏覽活動
     function browse_activity($browseid){
         $select = $this->db->query("SELECT * FROM `add_activity` WHERE `id`='$browseid '");
