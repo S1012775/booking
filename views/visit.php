@@ -1,51 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Lab</title>
 
-<link rel="stylesheet"	href="../views/css/jquery.mobile-1.3.2.min.css" />
-<script src="../views/js/jquery-1.9.1.min.js"></script>
-<script src="../views/js/jquery.mobile-1.3.2.min.js"></script>
-<link rel="stylesheet"	href="../views/css/selectButton.css" />
-
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Stylish Portfolio - Start Bootstrap Theme</title>
+    <link href="../views/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../views/css/stylish-portfolio.css" rel="stylesheet">
+    <link rel="stylesheet"	href="../views/css/selectButton.css" />
+    <link rel="stylesheet"	href="../views/css/seeActivity.css" />
+      
 </head>
+
 <body>
+    <header id="" class="header">
+        <h1>活動列表</h1>
+    </header>
+     
+ <table id="keywords" cellspacing="0" cellpadding="0">
+    <thead>
+      <tr>
+      	<th><span>編號</span></th>
+        <th><span>活動名稱</span></th>
+        <th><span>人數限制</span></th>
+        <th><span>可否攜伴</span></th>
+        <th><span>瀏覽</span></th>
+      </tr>
+    </thead>
+     <?php  foreach ($data as $value){  ?>
+    <tbody>
+      <tr>
+        <td class="lalign"><?php echo $value[0] ?></td>
+        <td><?php echo $value[1] ?></td>
+        <td><?php echo $value[2] ?></td>
+        <td><?php echo $value[3] ?></td>
+        <td><a href="browse_activity?id=<?php echo $value[0] ?>">GO</td>
+      </tr>
+     <?php }?>
+    </tbody>
+  </table>
+  <span class="pull-right">
+<button class="addbutton" onclick="window.location.href='../Home/select'" style="vertical-align:middle"><span>回選單</span></button>  
+   </sapn>
 
-	<div data-role="page" id="homePage" data-theme="c">
-
-		<div data-role="header" data-position="fixed">
-			<h1>活動報名系統</h1>
-		</div>
-
-		<div>
-		<a href="#aboutPage" data-role="button"  style="vertical-align:middle" data-rel="dialog"><span>manage</span></a>
-		</div>
-		
-		
-		
-		
-
-	</div>
+   
 
 
+   
+  
 
-
-
-
-
-     <!--------------------------------Login----------------------------->
-
-	<div data-role="page" id="aboutPage">
-		<div data-role="header">
-			<h1>About</h1>
-		</div>
-		<div data-role="content">
-			<p>文章作者 :錢達智(wolfgang.chien@gmail.com)。</p>
-		</div>
-	</div>
-	<!--------------------------------Login----------------------------->
-
+  
 
 </body>
+
 </html>

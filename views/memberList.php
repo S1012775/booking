@@ -19,20 +19,15 @@
 <body>
     <header id="" class="header">
         <div class="text-vertical-center">
-        	<button class="seebutton" onclick="window.location.href='addActivity'" style="vertical-align:middle"><span>建立活動報名</span></button>
+        	
         </div>
     </header>
-     
  <table id="keywords" cellspacing="0" cellpadding="0">
     <thead>
       <tr>
       	<th><span>編號</span></th>
-        <th><span>活動名稱</span></th>
-        <th><span>人數限制</span></th>
-        <th><span>可否攜伴</span></th>
-        <th><span>瀏覽</span></th>
-        <th><span>修改</span></th>
-        <th><span>設定</span></th>
+        <th><span>員工編號</span></th>
+        <th><span>員工名稱</span></th>
       </tr>
     </thead>
      <?php  foreach ($data as $value){  ?>
@@ -41,18 +36,18 @@
         <td class="lalign"><?php echo $value[0] ?></td>
         <td><?php echo $value[1] ?></td>
         <td><?php echo $value[2] ?></td>
-        <td><?php echo $value[3] ?></td>
-        <td><a href="browse_activity?id=<?php echo $value[0] ?>">GO</td>
-        <td><a href="modify_activity?id=<?php echo $value[0] ?>">修改</td>
-       <td><a href="delete_activity?id=<?php echo $value[0] ?>">刪除</td>
+        
       </tr>
      <?php }?>
     </tbody>
   </table>
-  <span class="pull-right">
-<button class="addbutton" onclick="window.location.href='../Home/select'" style="vertical-align:middle"><span>回選單</span></button>  
-   </sapn>
-
+    <div align="center">
+        <form method="post">
+            員工編號<input type="text" class="form-control" name="employeeID" value="">
+            員工名稱<input type="text" class="form-control" name="employeeIDName" value="">
+            <button type="submit" class="addbutton" name="addmember">新增</button>
+        </form>
+    </div>
    
 
 
