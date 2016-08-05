@@ -20,15 +20,6 @@
     <link rel="stylesheet"	href="../views/css/seeActivity.css" />
     <script type="text/javascript" src="/EasyMVC/views/js/jquery-1.9.1.min.js"></script>
     <script >
-        // $(document).ready(init);
-        
-        // function init (){
-        //     refresh()
-        //     setInterval(function(){
-        //         refresh()
-        //     },1000);
-            
-        // }
         $(document).ready(function(){
             setInterval(function(){
                 refresh();
@@ -38,12 +29,7 @@
        
         function refresh(){
             number = $("#number").text();
-            // alert(number);
             url = "/EasyMVC/Visit/ajax/"+ number;
-            //  $.get(url),function(data){
-            //     // $("#person").text("剩餘名額:"+data);
-            //     alert("123");
-            // }
             $.get(url, function(data){
                 // alert(data);
                 $("#person").text("剩餘名額:"+data);
