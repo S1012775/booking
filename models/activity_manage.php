@@ -3,9 +3,10 @@
 class activity_manage extends Connect {
     //檢視活動列表
     function show_activity(){
-        $select = $this->db->query("SELECT * FROM `add_activity`");
-        $data = $select->fetchAll(PDO::FETCH_ASSOC);
-        foreach($data as $row){
+        $sql=("SELECT * FROM `add_activity`");
+        $result = $this->db->prepare($sql);
+        $result->execute();
+        foreach($result as $row){
             $id=$row['id'];
             $name=$row['activity_name'];
             $limit_person=$row['limit_person'];
@@ -25,9 +26,18 @@ class activity_manage extends Connect {
             $content=$_POST['content'];
             $limit_person=$_POST['limit_person'];
         if($_POST['activity_name']!="" ){
-            $this->db->query("INSERT INTO `add_activity` (`activity_name`,`starttime`,`endtime`,`location`,`partner`,`content`,`limit_person`,`quotapeople`)VALUES('$name','$starttime','$endtime','$location','$partner','$content','$limit_person','$limit_person')");
-            return "<script>alert('資料送出');</script>";
+            $sql=("INSERT INTO `add_activity` (`activity_name`,`starttime`,`endtime`,`location`,`partner`,`content`,`limit_person`,`quotapeople`)VALUES(':name',':starttime',':endtime',':location',':partner',':content',':limit_person',':limit_person')");
+            $result = $this->db->prepare($sql);
+            $result->bindParam(':activity_name', $name);
+            $result->bindParam(':starttime', $starttime);
+            $result->bindParam(':endtime', $endtime);
+            $result->bindParam(':location', $location);
+            $result->bindParam(':partner', $partner);
+            $result->bindParam(':content', $content);
+            $result->bindParam(':limit_person', $limit_person);
+            $result->execute();
             header("location:manage");
+            return "<script>alert('資料送出');</script>";
         }else{
             return "<script>alert('不可有空白');</script>";
         	}
@@ -35,9 +45,10 @@ class activity_manage extends Connect {
     }
     //檢視修改活動
     function modifyshow_activity($selectid){
-        $select = $this->db->query("SELECT * FROM `add_activity` WHERE `id`='$selectid '");
-        $data = $select->fetchAll(PDO::FETCH_ASSOC);
-        foreach($data as $row){
+        $sql=("SELECT * FROM `add_activity` WHERE `id`='$selectid '");
+        $result = $this->db->prepare($sql);
+        $result->execute();
+        foreach($result as $row){
             $id=$row['id'];
             $name=$row['activity_name'];
             $starttime=$row['starttime'];
@@ -63,7 +74,9 @@ class activity_manage extends Connect {
             $content=$_POST['content'];
             $limit_person=$_POST['limit_person'];
         if($_POST['activity_name']!="" ){
-            $this->db->query("UPDATE `add_activity` SET `activity_name`='$name' ,`starttime`='$starttime',`endtime`='$endtime',`location`='$location',`partner`='$partner',`content`='$content',`limit_person`='$limit_person',`quotapeople`='$limit_person' WHERE id='$selectid'");
+            $sql=("UPDATE `add_activity` SET `activity_name`='$name' ,`starttime`='$starttime',`endtime`='$endtime',`location`='$location',`partner`='$partner',`content`='$content',`limit_person`='$limit_person',`quotapeople`='$limit_person' WHERE id='$selectid'");
+            $result = $this->db->prepare($sql);
+            $result->execute();
             return "<script>alert('資料送出');</script>";
             
         }else{
@@ -73,15 +86,18 @@ class activity_manage extends Connect {
     }
     //刪除活動
     function delete_activity($deleteid){
-    $this->db->query("DELETE FROM `add_activity` WHERE `id`='$deleteid'");
-    if($deleteid){  
+    $dql= ("DELETE FROM `add_activity` WHERE `id`='$deleteid'");
+    $result = $this->db->prepare($sql);
+    $result->execute();
+    if($result->execute()){  
         header("location:manage");
     }
 }
     //員工列表
     function show_memberList($browseid){
-        $select = $this->db->query("SELECT * FROM `member_list`WHERE `joinid`='$browseid '");
-        $data = $select->fetchAll(PDO::FETCH_ASSOC);
+        $sql=("SELECT * FROM `member_list`WHERE `joinid`='$browseid '");
+        $result = $this->db->prepare($sql);
+        $result->execute();
         foreach($data as $row){
             $id=$row['id'];
             $employeeID=$row['employeeID'];
@@ -98,7 +114,11 @@ class activity_manage extends Connect {
             $employeeID=$_POST['employeeID'];
             $employeeIDName=$_POST['employeeIDName'];
             if($_POST['employeeID']!="" && $_POST['employeeIDName']!=""){
-                $this->db->query("INSERT INTO `member_list` (`employeeID`,`employeeIDName`,`joinid`,`sign`,`partner`)VALUES('$employeeID','$employeeIDName','$browseid','未參加','0')");
+                $sql=("INSERT INTO `member_list` (`employeeID`,`employeeIDName`,`joinid`,`sign`,`partner`)VALUES(':employeeID',':employeeIDName','$browseid','未參加','0')");
+                $result = $this->db->prepare($sql);
+                $result->bindParam(":employeeID",$employeeID);
+                $result->bindParam(":employeeIDName",$employeeIDName);
+                $result->execute();
                 return "<script>alert('資料送出');</script>";
             }else{
                 return "<script>alert('不可有空白');</script>";
@@ -107,8 +127,9 @@ class activity_manage extends Connect {
     }
     //瀏覽活動
     function browse_activity($browseid){
-        $select = $this->db->query("SELECT * FROM `add_activity` WHERE `id`='$browseid '");
-        $data = $select->fetchAll(PDO::FETCH_ASSOC);
+        $sql =("SELECT * FROM `add_activity` WHERE `id`='$browseid '");
+        $result = $this->db->prepare($sql);
+        $result->execute();
         foreach($data as $row){
             $id=$row['id'];
             $name=$row['activity_name'];
