@@ -1,5 +1,10 @@
 <?php 
 
+date_default_timezone_set('Asia/Taipei');
+ $now=date("Y-m-d H:i:s");
+ echo  $now;
+ 
+      
 ?>
 <!DOCTYPE html>
 
@@ -93,6 +98,9 @@
   </table>
   <div align="center">
         <form method="post">
+            <?php   foreach ($data[0] as $value){
+          if($now >$value[2] && $now <$value[3])
+      ?>
             <h2>報名資料</h2>
             員工編號<input type="text" class="form-control" name="employeeID" value="">
             員工名稱<input type="text" class="form-control" name="employeeIDName" value="">
@@ -105,6 +113,8 @@
   	        
   	        }}?>
             <button type="submit" class="addbutton" name="sign_activity">報名</button>
+            
+            <?php  } ?>
         </form> 
     </div>  
 </body>

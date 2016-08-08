@@ -14,6 +14,25 @@
     <link rel="stylesheet"	href="../views/css/selectButton.css" />
     <link rel="stylesheet"	href="../views/css/addActivity.css" />
     <link rel="stylesheet"	href="../views/css/seeActivity.css" />
+    <script type="text/javascript" src="/EasyMVC/views/js/jquery-1.9.1.min.js"></script>
+    <script >
+        $(document).ready(function(){
+            setInterval(function(){
+                refresh();
+            },1000);
+        });
+        
+       
+        function refresh(){
+            number = $("#number").text();
+            url = "/EasyMVC/Visit/ajax/"+ number;
+            $.get(url, function(data){
+                // alert(data);
+                $("#person").text("剩餘名額:"+data);
+            });
+            
+        }
+    </script>
 </head>
 
 <body>
@@ -37,7 +56,7 @@
     <p class="inputfield"><label>是否可攜伴參加:<?php echo $value[5] ?>	</label></p>
   	<p class="inputfield"><label>詳細內容:<?php echo $value[6] ?></label></p> 
     <p class="inputfield"><label>人數限制:<?php echo $value[7] ?></label></p>
-    <p class="inputfield"><label>剩餘名額:<?php echo $value[8] ?></label></p>
+    <p class="inputfield"><label id=person>剩餘名額:<?php echo $value[8] ?></label></p>
 	<?php } ?>
 	 </form>
 	<table id="keywords" cellspacing="0" cellpadding="0">
