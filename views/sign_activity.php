@@ -2,8 +2,11 @@
 
 date_default_timezone_set('Asia/Taipei');
  $now=date("Y-m-d H:i:s");
- echo  $now;
  
+if (!is_array($data)) {
+    echo $data;
+    exit;
+}
       
 ?>
 <!DOCTYPE html>
@@ -28,15 +31,13 @@ date_default_timezone_set('Asia/Taipei');
         $(document).ready(function(){
             setInterval(function(){
                 refresh();
-            },1000);
+            },1000);//一秒更新一次
         });
-        
-       
         function refresh(){
-            number = $("#number").text();
+            $("#nowtime").text(Date());  //現在時間
+            number = $("#number").text();  //剩餘名額
             url = "/EasyMVC/Visit/ajax/"+ number;
             $.get(url, function(data){
-                // alert(data);
                 $("#person").text("剩餘名額:"+data);
             });
             
@@ -70,10 +71,11 @@ date_default_timezone_set('Asia/Taipei');
     <p class="inputfield"><label>人數限制:<?php echo $value[7] ?></label></p>
     <p class="inputfield"><label id=person>剩餘名額:<?php echo $value[8] ?></label></p>
 	<?php } ?>
-	
+	<label id ="nowtime"></label>
 	
 	 </form>
 	<table id="keywords" cellspacing="0" cellpadding="0">
+	    
     <thead>
       <tr>
       	<th><span>編號</span></th>

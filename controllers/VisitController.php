@@ -18,9 +18,10 @@ class VisitController extends Controller {
         $data[]= $browse;
         $data[]= $show;
         $manage= $this->view("sign_activity",$data);
-        $add=$browseactivity->add_memberList($browseid);
-        $this->view("alert",$add);
-        
+        if(isset($_POST["sign_activity"])){
+            $add=$browseactivity->add_memberList($browseid,$employeeID,$partner);
+            $this->view("alert",$add);
+        }
         }
     }
     function ajax($browseid){

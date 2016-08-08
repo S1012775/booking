@@ -3,9 +3,10 @@
 class activity_visit extends Connect {
     //檢視活動列表
     function show_activity(){
-        $select = $this->db->query("SELECT * FROM `add_activity`");
-        $data = $select->fetchAll(PDO::FETCH_ASSOC);
-        foreach($data as $row){
+        $sql=("SELECT * FROM `add_activity`");
+        $result = $this->db->prepare($sql);
+        $result->execute();
+        foreach($result as $row){
             $id=$row['id'];
             $name=$row['activity_name'];
             $limit_person=$row['limit_person'];
@@ -14,83 +15,12 @@ class activity_visit extends Connect {
         }
         return  $arraylist;
     }
-    //員工列表
-    function show_memberList($browseid){
-        $select = $this->db->query("SELECT * FROM `member_list`WHERE `joinid`='$browseid '");
-        $data = $select->fetchAll(PDO::FETCH_ASSOC);
-        foreach($data as $row){
-            $id=$row['id'];
-            $employeeID=$row['employeeID'];
-            $employeeIDName=$row['employeeIDName'];
-            $sgin=$row['sign'];
-            $partner=$row['partner'];
-            
-            $arraymember[]=array("$id","$employeeID","$employeeIDName","$sgin","$partner");
-        }
-        return  $arraymember;
-    }
-    //員工報名
-    function add_memberList($browseid){
-        if (isset($_POST["sign_activity"])){
-            //判斷是否可報名
-            $employeeID=$_POST['employeeID'];
-            $employeeIDName=$_POST['employeeIDName'];
-            $partner=$_POST['partner'];
-            $select=$this->db->query("SELECT * FROM `member_list` WHERE `joinid`='$browseid' &&`employeeID`='$employeeID' ");
-            $data = $select->rowCount();
-            
-            if( $data!=0 &&$_POST['employeeID']!="" && $_POST['employeeIDName']!=""  ){
-                $true=$this->db->query("UPDATE`member_list` SET`sign`='已參加',`partner`='$partner' WHERE `employeeID`='$employeeID' && `joinid`='$browseid' ");
-                // return "<script>alert('資料送出');</script>";
-            }else{
-                // return "<script>alert('不可有空白或沒有權限參加此活動喔!');</script>";
-            	}
-        //判斷剩餘名額    	
-        try{
-        
-        $this->db->beginTransaction();
-        $sql="SELECT * FROM `add_activity` WHERE id = $browseid FOR UPDATE";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        $people = $stmt->fetch();
-        
-        sleep(3);
-        if($people['quotapeople'] >= ($_POST['partner']+1) ){
-            $sql="UPDATE `add_activity` SET `quotapeople` = quotapeople - (:partner+1) WHERE id = $browseid &&  `sign`='未參加'" ; 
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':partner', $_POST['partner'], PDO::PARAM_INT);
-            $updateCount = $stmt->execute();
-            if($updateCount > 0){
-                $msg = '報名成功';
-            }else{
-                $msg = '報名失敗';
-            }
-        }
-        else{
-           throw new Exception("人數已滿");
-        }
-        
-        $this->db->commit();
-        
-    }catch (Exception $err){
-        $this->db->rollBack();
-        $msg = $err->getMessage();
-    } 
-    
-    
-            	
-        }  
-    }
-    
-    
-    
-    
-    
-    //瀏覽活動
+     //瀏覽活動
     function browse_activity($browseid){
-        $select = $this->db->query("SELECT * FROM `add_activity` WHERE `id`='$browseid '");
-        $data = $select->fetchAll(PDO::FETCH_ASSOC);
-        foreach($data as $row){
+        $sql=("SELECT * FROM `add_activity` WHERE `id`='$browseid '");
+        $result = $this->db->prepare($sql);
+        $result->execute();
+        foreach($result as $row){
             $id=$row['id'];
             $name=$row['activity_name'];
             $starttime=$row['starttime'];
@@ -106,6 +36,93 @@ class activity_visit extends Connect {
         return  $arraybrowse;
         
     }
+    //員工列表
+    function show_memberList($browseid){
+        $sql=("SELECT * FROM `member_list`WHERE `joinid`='$browseid '");
+        $result = $this->db->prepare($sql);
+        $result->execute();
+        foreach($result as $row){
+            $id=$row['id'];
+            $employeeID=$row['employeeID'];
+            $employeeIDName=$row['employeeIDName'];
+            $sgin=$row['sign'];
+            $partner=$row['partner'];
+            $arraymember[]=array("$id","$employeeID","$employeeIDName","$sgin","$partner");
+        }
+        return  $arraymember;
+    }
+    //員工報名
+    function add_memberList($browseid,$employeeID,$partner){
+          
+        try{
+        
+        $this->db->beginTransaction();
+        
+        
+        //搜尋可報名員工
+        $employeeID=$_POST['employeeID'];
+        $employeeIDName=$POST['employeeIDName'];
+        $partner=$_POST['partner'];
+        $sql=("SELECT * FROM `member_list` WHERE `joinid`='$browseid' && `employeeID`=':employeeID' && `sign`='未參加'");
+        $result = $this->db->prepare($sql);
+        $result->bindParam(':employeeID',$employeeID);
+        $result->execute();
+        $check= $result->rowCount();
+        if($employeeID=="" && $employeeIDName=="" && $partner ==""){
+            throw new Exception("不可有空白");
+        }
+        if ($check =0){
+            throw new Exception("您沒有權限報名此活動");
+        }
+        
+        
+        sleep(3);
+        //搜尋活動資訊
+        $sql="SELECT * FROM `add_activity` WHERE `id` = $browseid FOR UPDATE";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        
+        $people = $stmt->fetch();
+        $quotapeople= $people['quotapeople'];
+        $partner=$_POST['partner'];
+        $employeeID=$_POST['employeeID'];
+        
+        //檢查剩餘人數
+        if($quotapeople < 1  || (($quotapeople - ($partner+1))<0)){
+            throw new Exception("超過可報名人數");
+        }        
+        
+       
+       //更新員工參加狀態
+        $sql=("UPDATE`member_list` SET `sign`='已參加',`partner`=':partner' WHERE `employeeID`=':employeeID' && `joinid`='$browseid'  &&  `sign`='未參加'");
+        $stmt =$this->db->prepare($sql);
+        $stmt->bindParam(':partner',$partner);
+        $stmt->bindParam(':employeeID',$employeeID);
+        if (!$stmt->execute()){
+            throw new Exception("不可重複報名");
+        }
+        
+        //更新剩餘名額
+        $sql="UPDATE `add_activity` SET `quotapeople` = quotapeople - (:partner+1) WHERE `id` = $browseid" ; 
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':partner', $partner);
+        if(!$stmt->execute()){
+            throw new Exception("報名失敗");
+        }else{
+            throw new Exception("報名成功");
+        }
+        
+        $this->db->commit();
+        
+    }catch (Exception $err){
+        $this->db->rollBack();
+        $msg = $err->getMessage();
+    } 
+    return $msg;
+    
+            	
+}  
+   
  }
    
 
