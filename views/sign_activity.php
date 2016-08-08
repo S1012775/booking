@@ -99,7 +99,7 @@ date_default_timezone_set('Asia/Taipei');
   <div align="center">
         <form method="post">
             <?php   foreach ($data[0] as $value){
-          if($now >$value[2] && $now <$value[3])
+          if($now >$value[2] && $now <$value[3]){
       ?>
             <h2>報名資料</h2>
             員工編號<input type="text" class="form-control" name="employeeID" value="">
@@ -114,7 +114,9 @@ date_default_timezone_set('Asia/Taipei');
   	        }}?>
             <button type="submit" class="addbutton" name="sign_activity">報名</button>
             
-            <?php  } ?>
+            <?php } else{?>
+            <h2>報名截止</h2>
+            <?php }}?>
         </form> 
     </div>  
 </body>
